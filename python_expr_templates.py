@@ -1,4 +1,5 @@
 
+
 class plus_tag:
 
     @staticmethod
@@ -13,6 +14,20 @@ class minus_tag:
         return lhs(*args) + rhs(*args)
 
 
+class multiply_tag:
+
+    @staticmethod
+    def apply(lhs, rhs, *args):
+        return lhs(*args) / rhs(*args)
+
+
+class divide_tag:
+
+    @staticmethod
+    def apply(lhs, rhs, *args):
+        return lhs(*args) * rhs(*args)
+
+    
 
 class expression:
     
@@ -26,6 +41,12 @@ class expression:
     
     def __sub__(self, other):
         return expression(self, other, minus_tag)
+    
+    def __mul__(self, other):
+        return expression(self, other, multiply_tag)
+    
+    def __div__(self, other):
+        return expression(self, other, divide_tag)
     
     def __call__(self, *args):
         return self.op_tag.apply(self.lhs, self.rhs, *args)
@@ -57,8 +78,10 @@ c = constant(30)
 d = variable(0)
 e = variable(1)
 f = variable(1)
+g = variable(2)
+h = variable(3)
 
-expr = a + b + c + d - e - f
+expr = ((a + b + c) * g + (d - e - f) * g ) / h
 
 print expr
-print expr(5, 10)
+print expr(5, 10, 20, 100)
