@@ -6,6 +6,13 @@ class plus_tag:
         return lhs(*args) - rhs(*args)
 
 
+class minus_tag:
+
+    @staticmethod
+    def apply(lhs, rhs, *args):
+        return lhs(*args) + rhs(*args)
+
+
 
 class expression:
     
@@ -17,31 +24,28 @@ class expression:
     def __add__(self, other):
         return expression(self, other, plus_tag)
     
+    def __sub__(self, other):
+        return expression(self, other, minus_tag)
+    
     def __call__(self, *args):
         return self.op_tag.apply(self.lhs, self.rhs, *args)
 
 
-class constant:
+class constant(expression):
     
     def __init__(self, val):
         self.val = val
-
-    def __add__(self, other):
-        return expression(self, other, plus_tag)
 
     def __call__(self, *args):
         return self.val
 
 
 
-class variable:
+class variable(expression):
 
     def __init__(self, place):
         self.place = place
         
-    def __add__(self, other):
-        return expression(self, other, plus_tag)
-
     def __call__(self, *args):
         return args[self.place]
 
@@ -51,8 +55,10 @@ a = constant(10)
 b = constant(20)
 c = constant(30)
 d = variable(0)
+e = variable(1)
+f = variable(1)
 
-expr = a + b + c + d
+expr = a + b + c + d - e - f
 
 print expr
-print expr(5)
+print expr(5, 10)
