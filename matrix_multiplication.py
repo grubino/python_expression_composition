@@ -4,7 +4,8 @@ class memoized_lookup_chain:
     def __init__(self, dim_list):
 
         n = len(dim_list)
-        self._memoized_m = [[float("inf") for j in range(n - i)] for i in range(n)]
+        self._memoized_m = [[float("inf") for j in range(n)] for i in range(n)]
+        self._optimum_indices = [[-1 for j in range(n)] for i in range(n)]
         self._dim_list = dim_list
 
     def __call__(self, start, end):
@@ -18,19 +19,20 @@ class memoized_lookup_chain:
         if(start == end):
             self._memoized_m[start][end] = 0
         else:
-            for k in range(start, end - 1):
-                q = self.__call__(start, k)
-                + self.__call__(k+1, end)
-                + (self._dim_list[start-1] * self._dim_list[k] * self._dim_list[j])
+            for k in range(start, end):
+                q = self(start, k) + self(k+1, end) + (self._dim_list[start-1] * self._dim_list[k] * self._dim_list[end])
                 if(q < self._memoized_m[start][end]):
                     self._memoized_m[start][end] = q
+                    self._optimum_indices[start][end] = k
         
         return self._memoized_m[start][end]
         
 
 def matrix_chain_order(dim_list):
 
-    return memoized_lookup_chain(dim_list)(0, len(dim_list) - 1)
+    lc = memoized_lookup_chain(dim_list)
+    result = lc(0, len(dim_list)-1)
+    return result
 
 
-print str(matrix_chain_order([10, 5, 20, 10, 40, 100]))
+print str(matrix_chain_order([10, 30, 5, 60]))
