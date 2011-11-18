@@ -31,8 +31,10 @@ class memoized_lookup_chain:
 def matrix_chain_order(dim_list):
 
     lc = memoized_lookup_chain(dim_list)
-    result = lc(0, len(dim_list)-1)
+    result = lc(1, len(dim_list)-1)
+
+    print str(lc._optimum_indices)
     return result
 
 
-print str(matrix_chain_order([10, 30, 5, 60]))
+print str(matrix_chain_order([41, 69, 12, 30, 88, 38, 51, 66]))
